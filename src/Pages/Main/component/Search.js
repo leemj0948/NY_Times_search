@@ -9,8 +9,8 @@ const Search = () => {
   const [dataList, setDataList] = useState([]);
   const [isFocus, setIsFocus] = useState(false);
   const [filterData, setFilterData] = useState(false);
-  const [btnEvent, setBtnEvent] = useState(true);
   const [searchData, setSearchData] = useState([]);
+  const [itemCount, setItemCount] = useState(10);
 
   //초기값
   useEffect(() => {
@@ -18,7 +18,6 @@ const Search = () => {
   }, []);
   const runAxious = async (search = { searchData }) => {
     try {
-      console.log(search);
       const config = {
         headers: { Accept: 'application/json' },
       };
@@ -26,33 +25,15 @@ const Search = () => {
         `${API}${search}&api-key=wTwRh7Blb0nUPWPWvHQCWVupJSoQBqeu`,
         config
       );
-      setDataList(res.data.response.docs);
-      console.log(dataList);
+      setDataList(res.data.response.docs.slice(0, itemCount));
     } catch (e) {
       console.log(e);
     }
   };
 
-  // const clickhandler = (searchData) => {
-  //   useEffect((searchData) => {
-  //     runAxious(searchData);
-  //   }, []);
-  // };
-
   const searchfilter = (e) => {
     setUserInput(e.target.value);
   };
-
-  // useEffect(() => {
-  //   const FINDVALUE = () => {
-  //     setFilterData(
-  //       Object.values(dataList).filter((dataList) => {
-  //         return dataList.headline.main.toLowerCase().includes(userInput);
-  //       })
-  //     );
-  //   };
-  //   setTimeout(FINDVALUE, 150);
-  // }, [searchData]);
 
   useEffect(() => {
     const FINDVALUE = () => {
@@ -121,9 +102,16 @@ const Search = () => {
       <Post
         data={filterData[0] ? filterData : dataList}
         userInput={userInput}
-        setBtnEvent={setBtnEvent}
-        btnEvent={btnEvent}
       />
+      {dataList.length > 10 && (
+        <Pagination
+          onClick={() => {
+            setItemCount(itemCount + 10);
+          }}
+        >
+          불러오기
+        </Pagination>
+      )}
     </>
   );
 };
@@ -186,6 +174,17 @@ const InputBox = styled.input`
   &:focus {
     outline: none;
   }
+`;
+const Pagination = styled.div`
+  margin: 2vw auto;
+  padding: 0.75vw;
+  width: 9vw;
+  height: 3vw;
+  text-align: center;
+  border: solid olivedrab;
+  background-color: darkolivegreen;
+  color: ivory;
+  cursor: pointer;
 `;
 
 export default Search;

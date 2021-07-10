@@ -7,9 +7,15 @@ const Post = (props) => {
   const history = useHistory();
   const goToProductDetail = (id, userInput) => {
     if (userInput === '') {
-      history.push(`/detailpage/${id}`);
+      history.push({
+        pathname: `/detailpage/${id}`,
+        state: { data: data[id] },
+      });
     } else {
-      history.push(`/detailpage/${id}?search=${userInput}`);
+      history.push({
+        pathname: `/detailpage/${id}?search=${userInput}`,
+        state: { data: data[id] },
+      });
     }
   };
   return (
@@ -18,17 +24,16 @@ const Post = (props) => {
       <Body>
         {Boolean(data[0]) &&
           data.map((elm, index) => {
-            const { headline, lead_paragraph, section_name, multimedia } = elm;
+            const { headline, lead_paragraph, section_name, _id } = elm;
             return (
               <List
                 key={index}
-                id={index}
+                id={_id}
                 userInput={userInput}
-                onClick={() => goToProductDetail(elm.id, userInput)}
+                onClick={() => goToProductDetail(index, userInput)}
               >
-                {/* <Img src={multimedia[0].url}></Img> */}
                 <Title>
-                  <Number>{section_name}) </Number>
+                  <Number>{section_name} </Number>
                   {headline.main}
                 </Title>
                 <Contents>{lead_paragraph.substring(0, 30)}...more</Contents>

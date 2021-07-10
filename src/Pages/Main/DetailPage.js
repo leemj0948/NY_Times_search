@@ -1,22 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
-import axios from 'axios';
-import { API } from '../../Config';
+import { useLocation } from 'react-router';
 
 const DetailPage = (props) => {
-  const [detailData, setDetailData] = useState({});
+  const location = useLocation();
   const history = useHistory();
-  const productId = history.location.pathname.split('/')[2];
-  // useEffect(() => {
-  //   axios.get(`${API}${productId}`).then((res) => setDetailData(res.data));
-  // }, []);
+  const data = location.state.data;
 
+  const { headline, lead_paragraph, pub_date, subsection_name } = data;
   return (
     <Form>
       <Contents>
-        <Title>{detailData.title}</Title>
-        <Body>{detailData.content}</Body>
+        <Title>{headline.main}</Title>
+        <Option>
+          <SubName>Subsection_name: {subsection_name}</SubName>
+          <Date>{new window.Date(pub_date).toLocaleDateString()}</Date>
+        </Option>
+        <Body>{lead_paragraph}</Body>
       </Contents>
       <Back>
         <Btn onClick={() => history.push('/')}>뒤로가기</Btn>
@@ -35,17 +36,30 @@ const Contents = styled.body`
   flex-direction: column;
   padding: 35px;
   width: 930px;
-  height: 247px;
+  /* height: 247px; */
   border: solid 0.5px ${(props) => props.theme.gray};
 `;
 const Title = styled.header`
-  margin-bottom: 35px;
+  margin-bottom: 4px;
   height: 35px;
   text-align: center;
   line-height: 1.75rem;
   font-size: 2rem;
-  font-weight: 500;
+  font-weight: 900;
 `;
+const Option = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin: 2vw 0;
+`;
+const Date = styled.div`
+  font-size: 0.9rem;
+`;
+const SubName = styled.div`
+  font-weight: 600;
+`;
+
 const Body = styled.article`
   line-height: 1.5;
   font-weight: 400;
